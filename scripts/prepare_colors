@@ -3,7 +3,7 @@
 scripts=${0%/*}
 
 [[ $# -ge 1 ]] && orig_theme_dir="$1" || dir="org"
-[[ $# -ge 2 ]] && dest_dir="$1"       || dest_dir="."
+[[ $# -ge 2 ]] && dest_dir="$2"       || dest_dir="."
 
 do_normalize() {
     local def_file=$1; shift
