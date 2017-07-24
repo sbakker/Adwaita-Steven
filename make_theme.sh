@@ -75,4 +75,4 @@ mkdir -p generated || exit 1
 perl -p -i -e \
     's{url\("(assets/.*)"\)}
     {url("resource:///org/gtk/libgtk/theme/Adwaita/$1")}gx' \
-    $orig_theme_dir/**/*.css
+    $(find $orig_theme_dir -name '*.css')
