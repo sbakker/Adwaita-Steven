@@ -49,12 +49,20 @@ sub rel_colors {
             )
         );
 
+    # Dump the default set of base colors.
+    print "/*\n";
+    for my $name (sort keys %$base_colors) {
+        print "  \@define-color $name $$base_colors{$name};\n";
+    }
+    print "*/\n\n";
+
     # Some colors should not be touched...
     delete $colors->{link_color};
 
     # For each color, find the best fit relative to the "base_colors",
     # i.e. for which base color a "shade" would come closest.
     # Then, express the color as a shade of the particular base color.
+
     for my $name (sort keys %$colors) {
         if ($colors->{$name} =~ /^(#[\da-f]{3,6})(.*?)$/) {
             my ($org_color, $tail) = ($1, $2);

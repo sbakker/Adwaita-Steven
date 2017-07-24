@@ -1,25 +1,27 @@
 /* Default color scheme */
 
 /*
-@define-color base_color            #e0e0e0;
-@define-color theme_base_color      @base_color;
 
-@define-color bg_color              #393f3f;
-@define-color theme_bg_color        @bg_color;
+@define-color base_color              #232729;
+@define-color theme_base_color        @base_color;
 
-@define-color borders               shade(@bg_color, 0.8);
+@define-color bg_color                #33393b;
+@define-color theme_bg_color          @bg_color;
 
-@define-color selected_bg_color     #678060;
-@define-color selected_fg_color     @fg_color;
+@define-color borders                 shade(@bg_color, 0.8);
 
-@define-color text_color            #ffffff;
-@define-color theme_text_color      @text_color;
+@define-color selected_bg_color       #678060;
+@define-color selected_bg_color       #215d9c;
+@define-color selected_fg_color       @fg_color;
+@define-color theme_selected_bg_color @selected_bg_color;
+@define-color theme_selected_fg_color @selected_fg_color;
 
-@define-color fg_color              #eeeeec;
-@define-color theme_fg_color        @fg_color;
-*/
+@define-color text_color              #ffffff;
+@define-color theme_text_color        @text_color;
 
-/*
+@define-color fg_color                #eeeeec;
+@define-color theme_fg_color          @fg_color;
+
 @define-color trough_bg_color_a     #bcbcb7;
 @define-color trough_bg_color_b     #e0e0dd;
 
