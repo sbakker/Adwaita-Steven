@@ -2,6 +2,25 @@
 
 _... or at least tweakable._
 
+The Adwaita theme is now the default theme for Gnome3 and is fine for most uses. However, I don't agree with all color choices, and would like to add a bit of Zenburn to it (mostly green for highlighting, rather than blue).
+
+Gnome2 and Gtk2 used to support setting the `gtk-color-scheme` variable (in `gtkrc`), that allowed color tweaks to stock themes, by changing a limited set of base colors.
+
+Since Gtk3 moved to CSS, this is no longer possible. To make any tweaks, one has to copy the theme files to one's `~/.themes` directory, and modify the colors in the CSS files. That in itself wouldn't be so bad if only the theme were expressed in shades of the base colors. That's not the case, unfortunately. The CSS files of the Adwaita dark theme alone contain 109 unique colors (the light theme even 165), each one specified as a literal RGB value.
+
+Of course, what we get in our distributed themes is a compiled version of the Adwaita sources, which I'm sure are full of macros and handy tools. The thing is, I don't want to set up a complete tool chain just to tweak a few colors.
+
+So, I came up with another approach:
+
+ * Define a set of base colors for the theme.
+ * Express all other colors as shades of these base colors.
+
+With that done, a tweak of a single base color *should* modify related colors in a way that is hopefully not too jarring.
+
+All I can say is, "it works for me", but YMMV, and I'm fairly sure the whole thing breaks down when you make extreme color modifications.
+
+So, below I'll outline what I did, along with instructions on reproducing this.
+
 # Modifications
 
 ## index.theme
@@ -76,60 +95,10 @@ gtk-color-scheme = "base_color:#efefef;bg_color:#dfdfdf;tooltip_bg_color:#f5f5b5
 
 # Creating the GTK-3 theme
 
-## Unpack the gtk.gresource file
-
-        cd gtk-3.0
-        ../scripts/xtract_resource /lib64/libgtk-3.so
-
-This unpacks the GTK resources file into the `org/gtk/libgt/theme/Adwaita`
-sub-directory.
-
-## Create symbolic names for all colours
-
-Extract all literal color values and generate `@define-color` statements:
-
-        ../scripts/prepare_colors
-
-This will modify the theme's CSS files in org/gtk. For example:
-
-        color: red;
-
-Will be replaced by:
-
-        color: @color19;
-
-And `gtk-color-names.css` will contain:
-
-        @define-color color19 #ff0000;
-
-The same thing is done for dark theme files.
-
-## (Re-)Define colours as shades of theme "base" colours
-
-Look for all `@define-color` statements in the unpacked CSS files and express them as `shade()`-s of a few basic theme colors:
-
-        ../scripts/mk_rel_colors normal > gtk-zenburn-colors.css
-        ../scripts/mk_rel_colors dark   > gtk-zenburn-colors-dark.css
-
-## Fix url("assets/...")
-
-Make sure the asset URLs are set correctly. The original CSS files contain things like:
+Run the `make_theme.sh` script:
 
 ```
-url("assets/checkbox-unchecked-dark.png")
+./make_theme.sh
 ```
 
-Unfortunately that does not load (the extracted "png" file is not a PNG file but a raw GDK pixbuf dump), so to make it work properly, this has to be modified to read:
-
-```
-url("resource:///org/gtk/libgtk/theme/Adwaita/assets/checkbox-unchecked-dark.png")
-```
-
-To fix this, run the following command:
-
-```
-perl -p -i -e \
-    's{url\("(assets/.*)"\)}
-    {url("resource:///org/gtk/libgtk/theme/Adwaita/$1")}gx' \
-    org/gtk/libgtk/theme/Adwaita/**/*.css
-```
+See the script itself for more details.

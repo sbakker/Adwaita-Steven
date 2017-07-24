@@ -2,16 +2,20 @@
 
 scripts=${0%/*}
 
-case "$1" in
+theme_type=$1; shift
+[ $# -ge 1 ] && theme_dir=$1 || theme_dir=org
+[ $# -ge 2 ] && names_dir=$2 || names_dir=./generated
+
+case "$theme_type" in
     'dark')
         files=(
-            $(find org -name '*.css' -a -name '*dark*' -type f)
-            gtk-color-names-dark.css
+            $(find $theme_dir -name '*.css' -a -name '*dark*' -type f)
+            $names_dir/gtk-color-names-dark.css
         );;
     'normal'|'')
         files=(
-            $(find org -name '*.css' -a '!' -name '*dark*' -type f)
-            gtk-color-names.css
+            $(find $theme_dir -name '*.css' -a '!' -name '*dark*' -type f)
+            $names_dir/gtk-color-names.css
         );;
     *)
         echo "usage: $0 [dark|normal]" 2>&1

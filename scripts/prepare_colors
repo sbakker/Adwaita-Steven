@@ -2,6 +2,9 @@
 
 scripts=${0%/*}
 
+[[ $# -ge 1 ]] && orig_theme_dir="$1" || dir="org"
+[[ $# -ge 2 ]] && dest_dir="$1"       || dest_dir="."
+
 do_normalize() {
     local def_file=$1; shift
 
@@ -9,8 +12,8 @@ do_normalize() {
     $scripts/normalize_colors $def_file "$@"
 }
 
-do_normalize gtk-color-names.css \
-    $(find org -name '*.css' -a '!' -name '*dark*' -type f)
+do_normalize $dest_dir/gtk-color-names.css \
+    $(find $orig_theme_dir -name '*.css' -a '!' -name '*dark*' -type f)
 
-do_normalize gtk-color-names-dark.css \
-    $(find org -name '*.css' -a -name '*dark*' -type f)
+do_normalize $dest_dir/gtk-color-names-dark.css \
+    $(find $orig_theme_dir -name '*.css' -a -name '*dark*' -type f)
