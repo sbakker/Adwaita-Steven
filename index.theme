@@ -1,0 +1,10 @@
+[X-GNOME-Metatheme]
+Name=Adwaita-Steven
+Type=X-GNOME-Metatheme
+Comment=Make Adwaita Great Again!
+Encoding=UTF-8
+GtkTheme=Adwaita-Steven
+MetacityTheme=Adwaita-Steven
+IconTheme=Adwaita
+CursorTheme=Adwaita
+CursorSize=24

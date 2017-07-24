@@ -1,0 +1,36 @@
+#!/usr/bin/perl
+
+use strict;
+
+@ARGV == 2 || die("usage: $0 '#123456' '#987654'\n");
+
+my ($src, $dst) = @ARGV;
+
+$src =~ s/white/#ffffff/g;
+$src =~ s/black/#000000/g;
+$dst =~ s/white/#ffffff/g;
+$dst =~ s/black/#000000/g;
+
+my @src = map { length($_) == 1 ? hex("$_$_") : hex($_) } $src =~ m/^#(.{1,2})(.{1,2})(.{1,2})$/;
+my @dst = map { length($_) == 1 ? hex("$_$_") : hex($_) } $dst =~ m/^#(.{1,2})(.{1,2})(.{1,2})$/;
+
+print "$src -> $dst:";
+color_diff(\@src, \@dst);
+#print "$dst -> $src:";
+#color_diff(\@dst, \@src);
+
+sub color_diff {
+    my ($src, $dst) = @_;
+
+    my $tot = 0;
+    for my $i (0..2) {
+        my $factor = 0;
+        if ($$src[$i]) {
+            $factor = $$dst[$i] / $$src[$i];
+        }
+        $tot += $factor;
+        printf(" %0.2f", $factor);
+    }
+    printf(" =~ %0.2f\n", $tot/3);
+}
+

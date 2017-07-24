@@ -1,0 +1,30 @@
+#!/usr/bin/perl
+
+my ($target, $color1, $color2) = @ARGV;
+
+my @target = make_rgb($target);
+my @color1 = make_rgb($color1);
+my @color2 = make_rgb($color2);
+my @result;
+
+for my $i (0..3) {
+    my $c1 = $color1[$i];
+    my $c2 = $color2[$i];
+    my $factor = ($c2 - $c1) / ($c1 ? $c1 : 1);
+    my $r = int($target[$i] + ($target[$i] * $factor));
+    if ($r < 0) { $r = 0 }
+    elsif ($r > 255) { $r = 255 }
+    $result[$i] = $r;
+}
+
+print sprintf("#%02x%02x%02x -> #%02x%02x%02x\n",
+                @target, @result);
+
+sub make_rgb {
+    my $arg = shift;
+
+    if ($arg =~ /^\#?(..)(..)(..)$/) {
+        return (hex($1), hex($2), hex($3));
+    }
+    return (0,0,0);
+}

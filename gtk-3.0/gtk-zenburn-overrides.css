@@ -1,0 +1,17 @@
+@define-color menu_bg_color shade (@theme_bg_color, 1.05);
+@define-color theme_unfocused_selected_bg_color mix (@theme_selected_bg_color, @theme_unfocused_bg_color, 0.5);
+
+GucharmapChartable {
+    background-color: @theme_bg_color;
+    color: @theme_fg_color;
+}
+
+GucharmapChartable:selected {
+    background-color: @theme_selected_bg_color;
+    color: @theme_selected_fg_color;
+}
+
+GucharmapChartable:active {
+    background-color: shade(@theme_selected_bg_color, 0.8);
+    color: @theme_selected_fg_color;
+}

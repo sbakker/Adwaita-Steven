@@ -1,0 +1,22 @@
+#!/bin/bash
+
+scripts=${0%/*}
+
+case "$1" in
+    'dark')
+        files=(
+            $(find org -name '*.css' -a -name '*dark*' -type f)
+            gtk-color-names-dark.css
+        );;
+    'normal'|'')
+        files=(
+            $(find org -name '*.css' -a '!' -name '*dark*' -type f)
+            gtk-color-names.css
+        );;
+    *)
+        echo "usage: $0 [dark|normal]" 2>&1
+        ;;
+esac
+
+#echo "/* FILES: ${files[@]} */"
+$scripts/rel_colors.pl -c "${files[@]}"

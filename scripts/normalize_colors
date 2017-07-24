@@ -1,0 +1,242 @@
+#!/usr/bin/perl
+
+use Modern::Perl;
+use FindBin;
+
+my $RGB_FILE  = "/usr/share/X11/rgb.txt";
+my %X11_COLOR = read_rgb($RGB_FILE);
+
+my @Files_Processed;
+
+my $debug = is_true($::ENV{DEBUG});
+
+sub debug(@) {
+    print STDERR @_ if $debug;
+}
+
+if (@ARGV < 2) {
+    die "usage: $FindBin::Script output-color-file input-file ...\n";
+}
+
+my $def_file = shift @ARGV;
+
+if (-e $def_file) {
+    die "color definition output file $def_file already exists\n";
+}
+
+my %input;
+for my $fname (@ARGV) {
+    $input{$fname} = load_file($fname);
+}
+
+my %color_def;
+my %output;
+for my $fname (keys %input) {
+    $output{$fname} = process_file($input{$fname}, \%X11_COLOR, \%color_def);
+}
+
+save_color_names($def_file, \%color_def);
+
+for my $fname (keys %output) {
+    if ($output{$fname} ne $input{$fname}) {
+        save_file($fname, $def_file, $output{$fname});
+    }
+}
+
+exit 0;
+
+END {
+    if ($? != 0) {
+        for my $fname (@Files_Processed) {
+            if (!rename("$fname.bak", $fname)) {
+                print STDERR "** CANNOT RESTORE $fname.bak -> $fname: $!\n";
+            }
+            else {
+                print STDERR "(restored $fname from $fname.bak)\n";
+            }
+        }
+    }
+}
+
+#############################################################################
+sub is_true {
+#############################################################################
+    my $val = shift;
+    return if !defined $val;
+    return 1 if $val =~ /^(yes|ok|true|on)$/i;
+    return 1 if ($val =~ /^[\+\-]?\d+/ and int($val) > 0);
+    return;
+}
+
+#############################################################################
+sub process_file {
+#############################################################################
+    my ($input, $x11_color, $color_def) = @_;
+
+    # Convert rgb() to #xxyyzz
+    $input =~ s{ rgb \s* \( \s*
+        (\d+) \s* , \s*
+        (\d+) \s* , \s*
+        (\d+) \s* \)
+    }{sprintf("#%02x%02x%02x", $1, $2, $3)}gex;
+
+    # Convert rgba() to alpha(#xxyyzz,a)
+    $input =~ s{ rgba \s* \( \s*
+        (\d+) \s* , \s*
+        (\d+) \s* , \s*
+        (\d+) \s* , \s*
+        ((?:\d*\.)?\d+) \s* \)
+    }{sprintf("alpha(#%02x%02x%02x, %s)", $1, $2, $3, $4)}gex;
+
+    # Replace X11 color names.
+    for my $name (sort { $a cmp $b } keys %$x11_color) {
+        if ($input =~ s/\b($name)\b/$$x11_color{$1}/g) {
+            debug "found $name\n";
+        }
+    }
+
+    # Replace all #xxyyzz colors by a symbolic name.
+    my $color2name = $color_def->{'by_color'} //= {};
+    my $name2color = $color_def->{'by_name'}  //= {};
+    my $ncolors = int(keys %$color2name);
+
+    my @lines;
+    foreach my $line (split(/\n/, $input)) {
+        next if $line =~ /^\s*\@define-color/;
+        while ($line =~ /(?:^|\W)(#[a-f\d]{3,12})/) {
+            my $color = lc $1;
+
+            # Extract R,G,B tuple.
+            my $nybbles = int((length($color)-1)/3);
+            my @rgb = (
+                hex(substr($color, 1, $nybbles)),
+                hex(substr($color, 1+$nybbles, $nybbles)),
+                hex(substr($color, 1+$nybbles*2, $nybbles)),
+            );
+
+            # Translate RGB values to the 0..255 range.
+            my $max_val = 2**(4*$nybbles)-1;
+            debug sprintf("$color; max_val=0x%x\n", $max_val);
+            @rgb = map { int($_/$max_val*0xff) } @rgb;
+
+            # Calculate "normalised" colour and look up its name.
+            my $norm_color = sprintf("#%02x%02x%02x", @rgb);
+            my $colorname = $color2name->{$norm_color};
+
+            if (!defined $colorname) {
+                # Colour not encountered yet, create a name for it.
+                $ncolors++;
+                $color2name->{$norm_color}
+                    = $colorname = sprintf("color%d", $ncolors);
+                $name2color->{$colorname} = $norm_color;
+            }
+
+            # Replace all occurrences of the color by the color name.
+            debug "sub: $color ($norm_color) -> $colorname\n";
+            debug "line1: $line\n";
+            $line =~ s/(^|\W)$color/$1\@$colorname/g;
+            debug "line2: $line\n";
+        }
+    } continue {
+        push @lines, $line;
+    }
+
+    return join("\n", @lines)."\n";
+}
+
+
+#############################################################################
+sub save_file {
+#############################################################################
+    my ($fname, $def_file, $output) = @_;
+    
+    if (-e "$fname.bak") {
+        unlink("$fname.bak") or die "cannot remove $fname.bak: $!\n";
+    }
+
+    rename($fname, "$fname.bak")
+        or die "cannot rename $fname to $fname.bak: $!\n";
+
+    push @Files_Processed, $fname;
+
+    if (open(my $fh, '>', $fname)) {
+        $fh->print("/* $fname - colors with symbolic names\n",
+                   " *\n",
+                   " * Colors are defined in $def_file\n",
+                   " */\n\n");
+
+        $fh->print($output);
+    }
+    else {
+        die "cannot write to $fname: $!\n";
+    }
+}
+
+
+#############################################################################
+sub save_color_names {
+#############################################################################
+    my ($fname, $color_def) = @_;
+    my $name2color = $color_def->{'by_name'};
+
+    if (open(my $fh, '>', $fname)) {
+        my @colornames = sort {
+            "$a-$b" =~ /^color(\d+)-color(\d+)$/; 
+            $1 <=> $2
+        } keys %$name2color;
+
+        if (@colornames) {
+            $fh->print("/* Symbolic names for colors */\n");
+            for my $name (@colornames) {
+                $fh->print("\@define-color $name $$name2color{$name};\n");
+            }
+        }
+    }
+    else {
+        die "cannot write to $fname: $!\n";
+    }
+}
+
+
+#############################################################################
+sub read_rgb {
+#############################################################################
+    my %name2hash;
+
+    if (open(F, $RGB_FILE)) {
+        while (<F>) {
+            if (/^\s*(\d+)\s+(\d+)\s+(\d+)\s+(.*)$/) {
+                my ($r, $g, $b, $name) = ($1, $2, $3, lc $4);
+                $name =~ s/\s+/-/g;
+                $name2hash{$name} = sprintf("#%02x%02x%02x", $r, $g, $b);
+            }
+            else {
+                chomp;
+                print STDERR "$RGB_FILE, line $.: cannot parse '$_'\n";
+            }
+        }
+        close F;
+    }
+    else {
+        print STDERR "cannot read $RGB_FILE: $!\n";
+    }
+    return %name2hash;
+}
+
+
+#############################################################################
+sub load_file {
+#############################################################################
+    my $fname = shift;
+    local($/) = undef;
+    my $input = '';
+    if (open(my $fh, '<', $fname)) {
+        local($/) = undef;
+        $input .= <$fh>;
+    }
+    else {
+        die "cannot read $fname: $!\n";
+    }
+    return $input;
+}
+

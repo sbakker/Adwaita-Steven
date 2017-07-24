@@ -1,0 +1,10 @@
+#!/usr/bin/perl -p
+
+s{ rgb \s* \( \s*
+    (\d+) \s* , \s*
+    (\d+) \s* , \s*
+    (\d+) \s* \)
+}{sprintf("#%02x%02x%02x", $1, $2, $3)}gex;
+
+s/white/#ffffff/g;
+s/black/#000000/g;

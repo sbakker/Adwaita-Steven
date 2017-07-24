@@ -1,0 +1,16 @@
+#!/bin/bash
+
+scripts=${0%/*}
+
+do_normalize() {
+    local def_file=$1; shift
+
+    rm -f $def_file
+    $scripts/normalize_colors $def_file "$@"
+}
+
+do_normalize gtk-color-names.css \
+    $(find org -name '*.css' -a '!' -name '*dark*' -type f)
+
+do_normalize gtk-color-names-dark.css \
+    $(find org -name '*.css' -a -name '*dark*' -type f)

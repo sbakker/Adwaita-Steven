@@ -1,0 +1,9 @@
+#!/usr/bin/perl -n
+
+if (/\@define-color\s+(\w+)\s+(.*)$/) {
+    print $1;
+    if ($::ENV{'VERBOSE'}) {
+        print "\t$2";
+    }
+    print "\n";
+}

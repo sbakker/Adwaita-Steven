@@ -1,0 +1,18 @@
+#!/usr/bin/perl
+
+use strict;
+use File::Basename;
+use File::Path qw( make_path );
+
+my $SRC_FILE = @ARGV ? shift @ARGV : 'gtk.gresource';
+
+my @list = readpipe("gresource list $SRC_FILE");
+
+for my $file (@list) {
+    chomp $file;
+    my ($name, $dir) = fileparse($file);
+    make_path("./$dir");
+    print "$file\n";
+    system("gresource extract $SRC_FILE $file > ./$file");
+    #print "gresource extract $SRC_FILE $file > ./$file\n";
+}

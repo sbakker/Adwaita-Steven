@@ -1,0 +1,20 @@
+/*
+@import url("gtk-zenburn-overrides.css");
+*/
+
+GucharmapChartable {
+    background-color: @theme_bg_color;
+}
+
+GucharmapChartable:selected {
+    background-color: @theme_selected_bg_color;
+}
+
+GucharmapChartable:active {
+    background-color: shade(@theme_selected_bg_color, 0.8);
+}
+
+MozContainer {
+    background-color: #ff0000;
+    color: #00ff00;
+}
