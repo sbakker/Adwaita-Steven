@@ -6,7 +6,7 @@ The Adwaita theme is now the default theme for Gnome3 and is fine for most uses.
 
 Gnome2 and Gtk2 used to support setting the `gtk-color-scheme` variable (in `gtkrc`), that allowed color tweaks to stock themes, by changing a limited set of base colors.
 
-Since Gtk3 moved to CSS, this is no longer possible. To make any tweaks, one has to copy the theme files to one's `~/.themes` directory, and modify the colors in the CSS files. That in itself wouldn't be so bad if only the theme were expressed in shades of the base colors. That's not the case, unfortunately. The CSS files of the Adwaita dark theme alone contain 109 unique colors (the light theme even 165), each one specified as a literal RGB value.
+Since Gtk3 moved to CSS, this is no longer possible. To make any tweaks, one has to copy the theme files to one's `~/.themes` directory, and modify the colors in the CSS files. That in itself wouldn't be so bad if only the theme were expressed in shades of the base colors. That's not the case, unfortunately. The CSS files of the Adwaita dark theme alone contain 110 unique colors (the light theme 102), each one specified as a literal RGB value.
 
 Of course, what we get in our distributed themes is a compiled version of the Adwaita sources, which I'm sure are full of macros and handy tools. The thing is, I don't want to set up a complete tool chain just to tweak a few colors.
 
