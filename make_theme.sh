@@ -26,7 +26,7 @@ cd gtk-3.0 || exit 1
 orig_theme_dir=org/gtk/libgtk/theme/Adwaita
 
 # Extract in "./org"
-../scripts/xtract_resource /lib64/libgtk-3.so
+../scripts/xtract_resource $libfile
 
 # This unpacks the GTK resources file into the
 # `org/gtk/libgt/theme/Adwaita` sub-directory.
