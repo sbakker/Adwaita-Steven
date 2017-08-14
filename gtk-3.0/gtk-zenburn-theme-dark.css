@@ -16,33 +16,39 @@
 @define-color theme_selected_bg_color @selected_bg_color;
 @define-color theme_selected_fg_color @selected_fg_color;
 
-@define-color text_color              #ffffff;
-@define-color theme_text_color        @text_color;
-
-@define-color fg_color                #eeeeec;
-@define-color theme_fg_color          @fg_color;
-
-@define-color trough_bg_color_a     #bcbcb7;
-@define-color trough_bg_color_b     #e0e0dd;
-
 */
 
-@define-color base_color              #2c302d;
-@define-color theme_base_color        @base_color;
+@define-color text_color                        #ffffff;
+@define-color theme_text_color                  @text_color;
 
-@define-color bg_color                #313633;
-@define-color theme_bg_color          @bg_color;
+@define-color fg_color                          #eeeeec;
+@define-color theme_fg_color                    @fg_color;
 
-@define-color selected_bg_color       #678060;
-@define-color theme_selected_bg_color @selected_bg_color;
+@define-color trough_bg_color_a                 #bcbcb7;
+@define-color trough_bg_color_b                 #e0e0dd;
 
-@define-color selected_fg_color       #ffffff;
-@define-color theme_selected_fg_color @selected_fg_color;
+@define-color base_color                        #2c302d;
+@define-color theme_base_color                  @base_color;
 
-/*
-@define-color unfocused_fg_color       shade(@fg_color, 0.9);
-@define-color theme_unfocused_fg_color @unfocused_fg_color;
+@define-color bg_color                          #313633;
+@define-color theme_bg_color                    @bg_color;
 
-@define-color unfocused_bg_color       shade(@bg_color, 0.9);
-@define-color theme_unfocused_bg_color @unfocused_bg_color;
-*/
+@define-color unfocused_selected_bg_color       @selected_bg_color;
+@define-color theme_unfocused_selected_bg_color @unfocused_selected_bg_color;
+
+@define-color unfocused_selected_fg_color       @selected_fg_color;
+@define-color theme_unfocused_selected_fg_color @unfocused_selected_fg_color;
+
+@define-color selected_bg_color                 #678060;
+@define-color theme_selected_bg_color           @selected_bg_color;
+
+@define-color selected_fg_color                 #ffffff;
+@define-color theme_selected_fg_color           @selected_fg_color;
+
+@define-color unfocused_bg_color                @bg_color;
+@define-color theme_unfocused_bg_color          @unfocused_bg_color;
+
+@define-color insensitive_fg_color              shade(@fg_color, 0.8);
+@define-color theme_insensitive_fg_color        @insensitive_fg_color;
+@define-color unfocused_fg_color                @insensitive_fg_color;
+@define-color theme_unfocused_fg_color          @insensitive_fg_color;
