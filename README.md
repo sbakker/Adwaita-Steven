@@ -54,14 +54,6 @@ gtk-color-scheme = "base_color:#efefef\nfg_color:#000000\ntooltip_fg_color:#0000
 
 ## Gtk3 Theme
 
-### gtk-3.0
-
-* settings.ini: Add `gtk-color-scheme` variable:
-
-```
-gtk-color-scheme = "base_color:#efefef;bg_color:#dfdfdf;tooltip_bg_color:#f5f5b5;selected_bg_color:#688060;text_color:#000000;fg_color:#000000;tooltip_fg_color:#000000;selected_fg_color:#ffffff;"
-```
-
 ### Additional files in gtk-3.0:
 
 #### Static:
