@@ -40,12 +40,34 @@ sub rel_colors {
                 fg_color
                 tooltip_fg_color
                 selected_fg_color
+
+                insensitive_base_color
+                insensitive_bg_color
+                insensitive_fg_color
+
+                unfocused_base_color
+                unfocused_bg_color
+                unfocused_borders
+                unfocused_fg_color
+                unfocused_insensitive_color
+                unfocused_selected_bg_color
+                unfocused_selected_fg_color
+                unfocused_text_color
+
                 theme_base_color
                 theme_bg_color
                 theme_selected_bg_color
                 theme_text_color
                 theme_fg_color
                 theme_selected_fg_color
+                theme_unfocused_base_color
+                theme_unfocused_bg_color
+                theme_unfocused_borders
+                theme_unfocused_fg_color
+                theme_unfocused_insensitive_color
+                theme_unfocused_selected_bg_color
+                theme_unfocused_selected_fg_color
+                theme_unfocused_text_color
             )
         );
 
