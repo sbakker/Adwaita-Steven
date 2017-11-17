@@ -21,6 +21,22 @@ All I can say is, "it works for me", but YMMV, and I'm fairly sure the whole thi
 
 So, below I'll outline what I did, along with instructions on reproducing this.
 
+# Requirements
+
+## gresource
+
+The `gresource` utility is needed to extract the CSS resources from the compiled Adwaita resource file (either a `.gtkresource` file or the GTK+ 3 shared library).
+
+For Fedora, `gresource` is included in `glib2-devel`:
+```
+sudo dnf install glib2-devel
+```
+
+For Debian/Ubuntu, `gresource` is included in `libglib2.0-bin`:
+```
+sudo apt install libglib2.0-bin
+```
+
 # Modifications
 
 ## index.theme
