@@ -21,6 +21,13 @@ All I can say is, "it works for me", but YMMV, and I'm fairly sure the whole thi
 
 So, below I'll outline what I did, along with instructions on reproducing this.
 
+# Compatibility
+
+Works for me on:
+
+ * GNOME 3.24
+ * GNOME 3.26
+
 # Requirements
 
 ## gresource
