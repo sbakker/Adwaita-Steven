@@ -39,7 +39,7 @@ if [[ -e generated ]]; then
 fi
 
 # Extract in "./org"
-../scripts/xtract_resource $libfile
+../scripts/xtract_resource $libfile || exit 1
 
 # This unpacks the GTK resources file into the
 # `org/gtk/libgt/theme/Adwaita` sub-directory.
