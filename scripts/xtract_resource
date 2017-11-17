@@ -2,17 +2,30 @@
 
 use strict;
 use File::Basename;
+use FindBin;
 use File::Path qw( make_path );
 
-my $SRC_FILE = @ARGV ? shift @ARGV : 'gtk.gresource';
+my $EXTRACT      = 'gresource';
+my $DFL_SRC_FILE = 'gtk.gresource';
 
-my @list = readpipe("gresource list $SRC_FILE");
+my $Resource_File = @ARGV ? shift @ARGV : $DFL_SRC_FILE;
+
+if (! -e $Resource_File) {
+    die "($FindBin::Script) $Resource_File: no such file or directory\n";
+}
+
+my @list = readpipe("$EXTRACT list $Resource_File");
+
+$? == 0 or die "($FindBin::Script) error executing $EXTRACT: $!\n";
+
+@list > 0 or die "($FindBin::Script) no valid resources in $Resource_File\n";
 
 for my $file (@list) {
     chomp $file;
     my ($name, $dir) = fileparse($file);
-    make_path("./$dir");
+    eval { make_path("./$dir") };
+    die "($FindBin::Script) $1\n" if $@ =~ /(.*)\s*at .*? line \d+.$/s;
     print "$file\n";
-    system("gresource extract $SRC_FILE $file > ./$file");
-    #print "gresource extract $SRC_FILE $file > ./$file\n";
+    system("$EXTRACT extract $Resource_File $file > ./$file");
+    $? == 0 or die "($FindBin::Script) $EXTRACT failed - cannot continue\n";
 }
