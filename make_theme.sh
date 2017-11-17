@@ -25,6 +25,19 @@ cd gtk-3.0 || exit 1
 
 orig_theme_dir=org/gtk/libgtk/theme/Adwaita
 
+backup_stamp=$(date +%Y%m%d-%H%M%S)
+if [[ -e org ]]; then
+    bak=org.$backup_stamp.bak
+    [[ ! -e $bak ]] || rm -r "$bak" || exit 1
+    mv org $bak || exit 1
+fi
+
+if [[ -e generated ]]; then
+    bak=generated.$backup_stamp.bak
+    [[ ! -e $bak ]] || rm -r "$bak" || exit 1
+    mv generated $bak || exit 1
+fi
+
 # Extract in "./org"
 ../scripts/xtract_resource $libfile
 
