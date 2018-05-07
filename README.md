@@ -27,6 +27,7 @@ Works for me on:
 
  * GNOME 3.24
  * GNOME 3.26
+ * GNOME 3.28
 
 # Requirements
 
