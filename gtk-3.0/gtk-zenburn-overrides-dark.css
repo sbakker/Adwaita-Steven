@@ -18,3 +18,9 @@ MozContainer {
     background-color: #000000;
     color: #ffffff;
 }
+
+MessageList,* {
+    -MessageList-new-mail-bg-color: #332844;
+    -MessageList-new-mail-bg-color: #435;
+    -MessageList-new-mail-bg-color: #546;
+}
