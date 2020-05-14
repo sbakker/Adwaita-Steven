@@ -42,7 +42,7 @@
 @define-color selected_bg_color                 #678060;
 @define-color theme_selected_bg_color           @selected_bg_color;
 
-@define-color selected_fg_color                 #ffffff;
+@define-color selected_fg_color                 @text_color;
 @define-color theme_selected_fg_color           @selected_fg_color;
 
 @define-color unfocused_bg_color                @bg_color;
