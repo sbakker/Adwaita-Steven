@@ -1,3 +1,4 @@
 gtk-3.0/generated
 gtk-3.0/org
 gtk-3.0/*.bak
+*.swp
