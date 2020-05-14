@@ -93,7 +93,7 @@ As mentioned above, the theme is expressed as shades of a limited set of base co
 
 The `gtk-3.0/gtk-zenburn-overrides-dark.css` contains some overrides for a few applications that don't work well with the tweaked theme, or dark themes in general (Evolution being one of them). You probably don't have to touch this.
 
-#### GTK-2.0
+### GTK-2
 
 Legacy (GNOME2) applications will use the GTK-2 theme, which can be tweaked by modifying the `gtk-color-scheme` variable in `gtk-2.0/gtkrc`
 
