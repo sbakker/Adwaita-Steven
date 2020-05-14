@@ -4,6 +4,12 @@ _... or at least tweakable._
 
 ***NOTE: These tweaks are optimised for dark themes only (Zenburn being a dark theme)***
 
+Original Adwaita Dark (GNOME 3.36):
+![screenshot](./screens/widget-factory-orig-s.png)
+
+Tweaked Adwaita Dark (GNOME 3.36):
+![screenshot](./screens/widget-factory-tweaked-s.png)
+
 The Adwaita theme is now the default theme for Gnome3 and its "dark" version is fine for most uses.
 However, I don't agree with all color choices, and would like to add a bit of Zenburn to it (mostly green for highlighting, rather than blue).
 
@@ -28,7 +34,7 @@ So, below I'll outline what I did, along with instructions on reproducing this.
 
 Works for me on:
 
- * GNOME 3.24 through GNOME 3.34
+ * GNOME 3.24 through GNOME 3.36
 
 # Requirements
 
