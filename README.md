@@ -2,7 +2,10 @@
 
 _... or at least tweakable._
 
-The Adwaita theme is now the default theme for Gnome3 and is fine for most uses. However, I don't agree with all color choices, and would like to add a bit of Zenburn to it (mostly green for highlighting, rather than blue).
+***NOTE: These tweaks are optimised for dark themes only (Zenburn being a dark theme)***
+
+The Adwaita theme is now the default theme for Gnome3 and its "dark" version is fine for most uses.
+However, I don't agree with all color choices, and would like to add a bit of Zenburn to it (mostly green for highlighting, rather than blue).
 
 Gnome2 and Gtk2 used to support setting the `gtk-color-scheme` variable (in `gtkrc`), that allowed color tweaks to stock themes, by changing a limited set of base colors.
 
@@ -25,11 +28,16 @@ So, below I'll outline what I did, along with instructions on reproducing this.
 
 Works for me on:
 
- * GNOME 3.24
- * GNOME 3.26
- * GNOME 3.28
+ * GNOME 3.24 through GNOME 3.34
 
 # Requirements
+
+## gnome-tweaks
+
+In order to select and activate the tweaked theme, you need the `gnome-tweaks` tool installed.
+
+ * Fedora/RHEL/CentOS: `sudo dnf install gnome-tweaks`
+ * Debian/Ubuntu: `sudo apt install gnome-tweaks`
 
 ## gresource
 
@@ -45,30 +53,84 @@ For Debian/Ubuntu, `gresource` is included in `libglib2.0-bin`:
 sudo apt install libglib2.0-bin
 ```
 
-# Modifications
+# Installation
 
-## index.theme
+## Clone the repository
+
+First clone the repository to your own environment:
+
+```
+mkdir -p ~/.themes
+cd ~/.themes
+git clone https://github.com/sbakker/Adwaita-Steven.git Adwaita-Tweaked
+cd Adwaita-Tweaked
+# Needed for pulling in `axxapy`'s `Adwaita-dark-gtk2` theme.
+git submodule update --init --recursive
+```
+
+## Create the GTK-3 theme
+
+```
+cd ~/.themes/Adwaita-Tweaked
+./make_theme.sh
+```
+
+This will extract/copy the Adwaita theme to the `Adwaita-Tweaked` directory and modify the CSS files to express all colors as shades of the base colors.
+
+See the script itself for more details.
+
+## Activating the theme
+
+ * Start `gnome-tweaks`
+ * In the *Appearance* tab, under *Themes*, the dropdown menu for *Applications* should now contain *Adwaita-Tweaked*
+ * Select *Adwaita-Tweaked* for *Applications*
+
+## Customising the theme
+
+### GTK-3
+
+As mentioned above, the theme is expressed as shades of a limited set of base colors. These base colors are defined in `gtk-3.0/gtk-zenburn-theme-dark.css`. This file contains 25 color definitions, but most color definitions refer to others, and in the end, there are only 7 colors directly expressed as RGB values.
+
+The `gtk-3.0/gtk-zenburn-overrides-dark.css` contains some overrides for a few applications that don't work well with the tweaked theme, or dark themes in general (Evolution being one of them). You probably don't have to touch this.
+
+#### GTK-2.0
+
+Legacy (GNOME2) applications will use the GTK-2 theme, which can be tweaked by modifying the `gtk-color-scheme` variable in `gtk-2.0/gtkrc`
+
+```
+gtk-color-scheme = "base_color:#efefef\nfg_color:#000000\ntooltip_fg_color:#000000\nselected_bg_color:#688060\nselected_fg_color:#ffffff\ntext_color:#000000\nbg_color:#dfdfdf\ninsensitive_bg_color:#F4F4F2\ntooltip_bg_color:#f5f5b5"
+```
+
+## Activating theme changes
+
+If you customise any of the settings above, you will need to reload the theme. The easiest is to use `gnome-tweak` to first change the theme to `Adwaita`, then back to `Adwaita-Tweaked`.
+
+# Implementation Information
+
+## Modifications from original
+
+### index.theme
 
 * Description changes
 
-## Gtk2 theme
+### Gtk2 theme
 
 Use `axxapy`'s `Adwaita-dark-gtk2` theme as the basis for the Gtk2 dark theme.
 
   * https://github.com/axxapy/Adwaita-dark-gtk2
 
-This is set up as a submodule, so if you clone this repository, you need to execute: 
+This is set up as a submodule, so if you clone this repository, you need to execute:
 
 ```
 git submodule update --init --recursive
 ```
 
-### gtk-2.0/
+#### gtk-2.0/
 
-Most entries in the `gtk-2.0` directory are symlinks to their counterpars in
+Most entries in the `gtk-2.0` directory are symlinks to their counterparts in
 the `Adwaita-dark-gtk2/gtk-2.0` directory, except one.
 
-#### gtk-2.0/gtkrc
+##### gtk-2.0/gtkrc
 
 * Add `gtk-color-scheme` variable:
 
@@ -76,14 +138,14 @@ the `Adwaita-dark-gtk2/gtk-2.0` directory, except one.
 gtk-color-scheme = "base_color:#efefef\nfg_color:#000000\ntooltip_fg_color:#000000\nselected_bg_color:#688060\nselected_fg_color:#ffffff\ntext_color:#000000\nbg_color:#dfdfdf\ninsensitive_bg_color:#F4F4F2\ntooltip_bg_color:#f5f5b5"
 ```
 
-## Gtk3 Theme
+### Gtk3 Theme
 
-### Additional files in gtk-3.0:
+#### Additional files in gtk-3.0:
 
-#### Static:
+##### Static:
 
   * `gtk.css`, `gtk-dark.css`:
-  
+
     Ties together the original Adwaita theme, and the Zenburn-like modifications.  It ensures that:
 
     * The original Adwaita resources are read.
@@ -99,7 +161,7 @@ gtk-color-scheme = "base_color:#efefef\nfg_color:#000000\ntooltip_fg_color:#0000
 
     Explicit overrides on top of the Adwaita scheme.
 
-#### Generated:
+##### Generated:
 
   * `gtk-color-names.css`, `gtk-color-names-dark.css`
 
@@ -107,14 +169,5 @@ gtk-color-scheme = "base_color:#efefef\nfg_color:#000000\ntooltip_fg_color:#0000
 
   * `gtk-zenburn-colors.css`, `gtk-zenburn-colors-dark.css`
 
-    Contains the colours in the "`names`" files above, expressed as expressed as shades of the base theme colors.
+    Contains the colours in the "`names`" files above, expressed as shades of the base theme colors.
 
-# Creating the GTK-3 theme
-
-Run the `make_theme.sh` script:
-
-```
-./make_theme.sh
-```
-
-See the script itself for more details.
