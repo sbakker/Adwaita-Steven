@@ -4,26 +4,46 @@
 
 ## Unpack the gtk.gresource file
 
-libfile=/lib64/libgtk-3.so.0
-if [[ -f /lib64/libgtk-3.so.0 ]]; then
-    libfile=/lib64/libgtk-3.so.0
-elif [[ -f /lib/libgtk-3.so.0 ]]; then
-    libfile=/lib/libgtk-3.so.0
-else
-    libfile=$(ldd $(which gtk-launch) | grep libgtk-3.so | awk '{ print $3 }')
+fatal() {
+    echo "** FATAL: $@" >&2
+    exit 1
+}
+
+find_libfile() {
+    local fname="$1"
+    local name="$2"
+    local prog="$3"
+
+    local libdir
+    for libdir in /lib64 /lib
+    do
+        libfile="$libdir/$fname"
+        if [[ -f $libfile ]]; then
+            echo "$libfile"
+            return 0
+        fi
+    done
+
+    libfile=$(ldd $(which "$prog") | grep "$name" | awk '{ print $3 }')
     if [[ ! -n $libfile ]]; then
-        echo "** FATAL: cannot find Gtk3 library" >&2
-        exit 1
-    elif [[ ! -r $libfile ]]; then
-        echo "** FATAL: cannot read Gtk3 library $libfile" >&2
-        exit 1
+        echo "** cannot find $name library" >&2
+        return 1
     fi
-fi
+    if [[ ! -r $libfile ]]; then
+        echo "** cannot read $name library $libfile" >&2
+        return 1
+    fi
+    echo $libfile
+    return 0
+}
 
 mkdir -p gtk-3.0
 cd gtk-3.0 || exit 1
 
 orig_theme_dir=org/gtk/libgtk/theme/Adwaita
+
+libfile=$(find_libfile gtk-3.0.so.0 gtk-3.0.so gtk-launch)
+[[ -n $libfile ]] || fatal "cannot continue"
 
 backup_stamp=$(date +%Y%m%d-%H%M%S)
 if [[ -e org ]]; then
@@ -38,11 +58,20 @@ if [[ -e generated ]]; then
     mv generated $bak || exit 1
 fi
 
-# Extract in "./org"
-../scripts/xtract_resource $libfile || exit 1
-
+# Extract GTK-3.0 library in "./org"
 # This unpacks the GTK resources file into the
 # `org/gtk/libgt/theme/Adwaita` sub-directory.
+../scripts/xtract_resource $libfile || exit 1
+
+# Try to find "libhandy", since it incorporates its own
+# Adwaita-dark files. :-(
+mkdir -p sm/puri/handy/themes
+touch sm/puri/handy/themes/Adwaita-dark.css
+
+libfile=$(find_libfile libhandy-1.so.0 libhandy-1.so gnome-clocks)
+if [[ -n $libfile ]]; then
+    ../scripts/xtract_resource $libfile
+fi
 
 ## Create symbolic names for all colours
 
@@ -50,6 +79,7 @@ fi
 
 mkdir -p generated || exit 1
 
+echo "Preparing colour definitions in $orig_theme_dir"
 ../scripts/prepare_colors $orig_theme_dir generated || exit 1
 # ^^^^^^^^^^^^^^^^^^^^^^^
 # This will modify the theme's CSS files in org/gtk. For example:
@@ -64,9 +94,11 @@ mkdir -p generated || exit 1
 # Look for all "@define-color" statements in the unpacked CSS
 # files and express them as "shade()"-s of a few basic theme colors:
 
+echo "Creating relative (light) colours -> generated/gtk-zenburn-colors.css"
 ../scripts/mk_rel_colors normal $orig_theme_dir generated \
     > generated/gtk-zenburn-colors.css
 
+echo "Creating relative (dark) colours -> generated/gtk-zenburn-colors-dark.css"
 ../scripts/mk_rel_colors dark $orig_theme_dir generated \
     > generated/gtk-zenburn-colors-dark.css
 
@@ -85,7 +117,13 @@ mkdir -p generated || exit 1
 #
 # Yes, that's a mouthful. ;-)
 
+echo
+echo "Fixing 'url(\"assets/...\") links in $orig_theme_dir"
+
 perl -p -i -e \
-    's{url\("(assets/.*)"\)}
+    's{url\("(assets/[^"]*)"\)}
     {url("resource:///org/gtk/libgtk/theme/Adwaita/$1")}gx' \
     $(find $orig_theme_dir -name '*.css')
+
+echo "inspected" $(find $orig_theme_dir -name '*.css' | wc -l) "files"
+echo done
