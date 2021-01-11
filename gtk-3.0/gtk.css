@@ -1,5 +1,13 @@
 @import url("generated/gtk-color-names-dark.css");
+
+/* Adwaita */
 @import url("org/gtk/libgtk/theme/Adwaita/gtk-contained-dark.css");
+
+/* libsoup */
+@import url("org/gnome/libsoup/directory.css");
+/* libhandy */
+@import url("sm/puri/handy/themes/Adwaita-dark.css");
+
 @import url("generated/gtk-zenburn-colors-dark.css");
 @import url("gtk-zenburn-theme-dark.css");
 @import url("gtk-zenburn-overrides-dark.css");
