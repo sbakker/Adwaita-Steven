@@ -42,7 +42,7 @@ cd gtk-3.0 || exit 1
 
 orig_theme_dir=org/gtk/libgtk/theme/Adwaita
 
-libfile=$(find_libfile gtk-3.0.so.0 gtk-3.0.so gtk-launch)
+libfile=$(find_libfile libgtk-3.so.0 gtk-3.so gtk-launch)
 [[ -n $libfile ]] || fatal "cannot continue"
 
 backup_stamp=$(date +%Y%m%d-%H%M%S)
