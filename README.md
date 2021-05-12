@@ -35,6 +35,7 @@ So, below I'll outline what I did, along with instructions on reproducing this.
 Works for me on:
 
  * GNOME 3.24 through GNOME 3.36
+ * Works for GNOME 3.38, except for applications that use gtk-4.
 
 # Requirements
 
