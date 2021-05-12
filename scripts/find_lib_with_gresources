@@ -1,0 +1,15 @@
+#!/bin/bash
+
+DIRS=${DIRS:-/lib64 /usr/lib64 /lib /usr/lib}
+
+for dirname in $DIRS; do
+    [[ -L $dirname ]] && continue
+    find -P $dirname -name '*.so' -o -name '*.so.*' | \
+        while read libfile; do
+            count=$(gresource list "$libfile" 2>/dev/null | grep -E '\.css$' | wc -l)
+            if [[ $count -gt 0 ]]; then
+                echo "# $libfile"
+                gresource list "$libfile" | grep -E '\.css$'
+            fi
+        done
+done
