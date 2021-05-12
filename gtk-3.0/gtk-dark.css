@@ -1,5 +1,5 @@
 @import url("generated/gtk-color-names-dark.css");
 @import url("org/gtk/libgtk/theme/Adwaita/gtk-contained-dark.css");
 @import url("generated/gtk-zenburn-colors-dark.css");
-@import url("gtk-zenburn-theme-dark.css");
-@import url("gtk-zenburn-overrides-dark.css");
+@import url("../css/gtk-zenburn-theme-dark.css");
+@import url("../css/gtk-zenburn-overrides-dark.css");
