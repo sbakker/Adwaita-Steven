@@ -1,6 +1,8 @@
 gtk-3.0/generated
 gtk-3.0/org
-gtk-3.0/gnome
 gtk-3.0/sm
 gtk-3.0/*.bak
+gtk-4.0/generated
+gtk-4.0/org
+gtk-4.0/*.bak
 *.swp
