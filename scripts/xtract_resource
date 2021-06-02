@@ -25,7 +25,7 @@ for my $file (@list) {
     my ($name, $dir) = fileparse($file);
     eval { make_path("./$dir") };
     die "($FindBin::Script) $1\n" if $@ =~ /(.*)\s*at .*? line \d+.$/s;
-    print "$file\n";
+    print "$file\n" if $::ENV{XTRACT_RESOURCE_VERBOSE};
     system("$EXTRACT extract $Resource_File $file > ./$file");
     $? == 0 or die "($FindBin::Script) $EXTRACT failed - cannot continue\n";
 }
