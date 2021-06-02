@@ -24,11 +24,18 @@ find_libfile() {
         fi
     done
 
+    local progpath=$(which "$prog" 2>/dev/null)
+    if [[ ! -n $progpath ]]; then
+        echo "** cannot find $prog" >&2
+        return 1
+    fi
+
     libfile=$(ldd $(which "$prog") | grep "$name" | awk '{ print $3 }')
     if [[ ! -n $libfile ]]; then
         echo "** cannot find $name library" >&2
         return 1
     fi
+
     if [[ ! -r $libfile ]]; then
         echo "** cannot read $name library $libfile" >&2
         return 1
@@ -37,12 +44,14 @@ find_libfile() {
     return 0
 }
 
+GTK_LAUNCH=${1:-gtk4-launch}
+
 mkdir -p gtk-4.0
 cd gtk-4.0 || exit 1
 
 orig_theme_dir=org/gtk/libgtk/theme/Adwaita
 
-libfile=$(find_libfile libgtk-4.so.1 gtk-4.so gtk4-launch)
+libfile=$(find_libfile libgtk-3.so.0 gtk-3.so $GTK_LAUNCH)
 [[ -n $libfile ]] || fatal "cannot continue"
 
 backup_stamp=$(date +%Y%m%d-%H%M%S)
@@ -61,6 +70,7 @@ fi
 # Extract GTK-4.0 library in "./org"
 # This unpacks the GTK resources file into the
 # `org/gtk/libgt/theme/Adwaita*` sub-directories.
+echo "Extracting GTK resources from $libfile"
 ../scripts/xtract_resource $libfile || exit 1
 
 # Try to find "libhandy", since it incorporates its own
@@ -68,6 +78,7 @@ fi
 #mkdir -p sm/puri/handy/themes
 #touch sm/puri/handy/themes/Adwaita-dark.css
 #libfile=$(find_libfile libhandy-1.so.0 libhandy-1.so libsoup-2.4.so.1 gnome-clocks)
+echo "Extracting GTK resources from $libfile"
 #[[ -n $libfile ]] && ../scripts/xtract_resource $libfile
 
 # Try to find "libsoup", since it incorporates its own
