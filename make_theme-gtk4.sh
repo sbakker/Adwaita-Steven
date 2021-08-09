@@ -51,7 +51,7 @@ cd gtk-4.0 || exit 1
 
 orig_theme_dir=org/gtk/libgtk/theme/Adwaita
 
-libfile=$(find_libfile libgtk-3.so.0 gtk-3.so $GTK_LAUNCH)
+libfile=$(find_libfile libgtk-4.so.0 gtk-4.so $GTK_LAUNCH)
 [[ -n $libfile ]] || fatal "cannot continue"
 
 backup_stamp=$(date +%Y%m%d-%H%M%S)
