@@ -1,0 +1,18 @@
+#!/bin/bash
+
+scripts=${0%/*}
+
+[[ $# -ge 1 ]] && orig_theme_dir="$1" || dir="org"
+[[ $# -ge 2 ]] && dest_dir="$2"       || dest_dir="."
+[[ $# -ge 3 ]] && suffix="$3"         || suffix=""
+
+do_normalize() {
+    local def_file=$1; shift
+
+    rm -f $def_file
+    echo "$scripts/normalize_colors $def_file "$@""
+    $scripts/normalize_colors $def_file "$@"
+}
+
+do_normalize $dest_dir/gtk-color-names${suffix}.css \
+    $(find $orig_theme_dir -name '*.css' -type f)
