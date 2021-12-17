@@ -9,6 +9,7 @@ do_normalize() {
     local def_file=$1; shift
 
     rm -f $def_file
+    echo "$scripts/normalize_colors $def_file "$@""
     $scripts/normalize_colors $def_file "$@"
 }
 
