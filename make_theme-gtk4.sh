@@ -49,8 +49,6 @@ GTK_LAUNCH=${1:-gtk4-launch}
 mkdir -p gtk-4.0
 cd gtk-4.0 || exit 1
 
-orig_theme_dir=org/gtk/libgtk/theme/Adwaita
-
 libfile=$(find_libfile libgtk-4.so.0 gtk-4.so $GTK_LAUNCH)
 [[ -n $libfile ]] || fatal "cannot continue"
 
@@ -78,7 +76,7 @@ echo "Extracting GTK resources from $libfile"
 #mkdir -p sm/puri/handy/themes
 #touch sm/puri/handy/themes/Adwaita-dark.css
 #libfile=$(find_libfile libhandy-1.so.0 libhandy-1.so libsoup-2.4.so.1 gnome-clocks)
-echo "Extracting GTK resources from $libfile"
+#echo "Extracting GTK resources from $libfile"
 #[[ -n $libfile ]] && ../scripts/xtract_resource $libfile
 
 # Try to find "libsoup", since it incorporates its own
@@ -94,28 +92,51 @@ echo "Extracting GTK resources from $libfile"
 
 mkdir -p generated || exit 1
 
-echo "Preparing colour definitions in $orig_theme_dir"
-../scripts/prepare_colors $orig_theme_dir generated || exit 1
-# ^^^^^^^^^^^^^^^^^^^^^^^
-# This will modify the theme's CSS files in org/gtk. For example:
-# "color: red;" will be replaced by "color: @color19", and
-# "generated/gtk-color-names.css" will contain:
-# "@define-color color19 #ff0000".
-#
-# The same thing is done for dark theme files.
+orig_theme_dir=org/gtk/libgtk/theme/Adwaita
+if [[ -d $orig_theme_dir ]]; then
+    echo "Preparing colour definitions in $orig_theme_dir"
+    ../scripts/prepare_colors $orig_theme_dir generated || exit 1
+    # ^^^^^^^^^^^^^^^^^^^^^^^
+    # This will modify the theme's CSS files in org/gtk. For example:
+    # "color: red;" will be replaced by "color: @color19", and
+    # "generated/gtk-color-names.css" will contain:
+    # "@define-color color19 #ff0000".
+    #
+    # The same thing is done for dark theme files.
+    ## (Re-)Define colours as shades of theme "base" colours
 
-## (Re-)Define colours as shades of theme "base" colours
+    # Look for all "@define-color" statements in the unpacked CSS
+    # files and express them as "shade()"-s of a few basic theme colors:
 
-# Look for all "@define-color" statements in the unpacked CSS
-# files and express them as "shade()"-s of a few basic theme colors:
+    echo "Creating relative (light) colours ->" \
+         "generated/gtk-zenburn-colors.css"
+    ../scripts/mk_rel_colors normal $orig_theme_dir generated \
+        > generated/gtk-zenburn-colors.css
 
-echo "Creating relative (light) colours -> generated/gtk-zenburn-colors.css"
-../scripts/mk_rel_colors normal $orig_theme_dir generated \
-    > generated/gtk-zenburn-colors.css
+    echo "Creating relative (dark) colours ->" \
+        "generated/gtk-zenburn-colors-dark.css"
+    ../scripts/mk_rel_colors dark $orig_theme_dir generated \
+        > generated/gtk-zenburn-colors-dark.css
+else
+    orig_theme_dir=org/gtk/libgtk/theme/Default
+    echo "Preparing colour definitions in $orig_theme_dir"
+    #../scripts/prepare_colors4 $orig_theme_dir generated -dark || exit 1
+    ../scripts/prepare_colors $orig_theme_dir generated || exit 1
 
-echo "Creating relative (dark) colours -> generated/gtk-zenburn-colors-dark.css"
-../scripts/mk_rel_colors dark $orig_theme_dir generated \
-    > generated/gtk-zenburn-colors-dark.css
+    #echo "Creating relative (dark) colours ->" \
+    #    "generated/gtk-zenburn-colors-dark.css"
+    #../scripts/mk_rel_colors dark $orig_theme_dir generated \
+    #    > generated/gtk-zenburn-colors-dark.css
+    echo "Creating relative (light) colours ->" \
+         "generated/gtk-zenburn-colors.css"
+    ../scripts/mk_rel_colors normal $orig_theme_dir generated \
+        > generated/gtk-zenburn-colors.css
+
+    echo "Creating relative (dark) colours ->" \
+        "generated/gtk-zenburn-colors-dark.css"
+    ../scripts/mk_rel_colors dark $orig_theme_dir generated \
+        > generated/gtk-zenburn-colors-dark.css
+fi
 
 ## Fix url("assets/...")
 
