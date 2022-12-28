@@ -4,7 +4,9 @@
 @import url("org/gtk/libgtk/theme/Adwaita/gtk-contained-dark.css");
 
 /* libsoup */
+/*
 @import url("org/gnome/libsoup/directory.css");
+*/
 /* libhandy */
 @import url("sm/puri/handy/themes/Adwaita-dark.css");
 
