@@ -1,10 +1,6 @@
 [X-GNOME-Metatheme]
-Name=Adwaita-Steven
+Name=Adwaita-Cosmic-Tweak
 Type=X-GNOME-Metatheme
-Comment=Make Adwaita Great Again!
+Comment=Tweak Cosmic Adwaita (for Evolution)
 Encoding=UTF-8
-GtkTheme=Adwaita-Steven
-MetacityTheme=Adwaita-Steven
-IconTheme=Adwaita
-CursorTheme=Adwaita
-CursorSize=24
+GtkTheme=Adwaita-Cosmic-Tweak

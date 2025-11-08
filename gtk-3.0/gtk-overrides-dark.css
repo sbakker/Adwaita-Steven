@@ -2,6 +2,7 @@
 @import url("gtk-zenburn-overrides.css");
 */
 
+/*
 GucharmapChartable {
     background-color: @theme_bg_color;
 }
@@ -18,6 +19,7 @@ MozContainer {
     background-color: #000000;
     color: #ffffff;
 }
+*/
 
 MessageList,* {
     -MessageList-new-mail-fg-color: #ed9;
