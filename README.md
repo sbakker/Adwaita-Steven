@@ -1,6 +1,6 @@
 # Make Adwaita Great Again (COSMIC Edition)
 
-***NOTE: These tweaks are optimised for dark themes only ***
+_**NOTE: These tweaks are optimised for dark themes only**_
 
 The [COSMIC desktop environment](https://system76.com/cosmic) allows the
 kind of colour tweaks that was the whole reason for **Adwaita-Steven** to
