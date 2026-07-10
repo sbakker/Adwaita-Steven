@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 
-use Modern::Perl;
+use 5.032;
+use warnings;
 use FindBin;
 
 my $RGB_FILE  = "/usr/share/X11/rgb.txt";
